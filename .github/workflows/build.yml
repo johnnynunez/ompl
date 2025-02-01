@@ -56,7 +56,7 @@ jobs:
       with:
         build-dir: ${{ runner.workspace }}/build
         build-type: Release
-        configure-options: -DOMPL_REGISTRATION=OFF -DOMPL_BUILD_DEMOS=OFF -DCMAKE_INSTALL_PREFIX=${{ runner.workspace }}/install -DOMPL_PYTHON_INSTALL_DIR=${{ runner.workspace }}/install/python
+        configure-options: -DOMPL_REGISTRATION=OFF -DOMPL_BUILD_DEMOS=OFF -DCMAKE_CXX_STANDARD=17 -DCMAKE_INSTALL_PREFIX=${{ runner.workspace }}/install -DOMPL_PYTHON_INSTALL_DIR=${{ runner.workspace }}/install/python
         run-test: true
         ctest-options: --output-on-failure
         install-build: true
@@ -64,7 +64,7 @@ jobs:
       if: runner.os != 'Windows'
       run: |
         cd tests/cmake_export
-        cmake -B build -DCMAKE_INSTALL_PREFIX=${{ runner.workspace }}/install
+        cmake -B build -DCMAKE_CXX_STANDARD=17 -DCMAKE_INSTALL_PREFIX=${{ runner.workspace }}/install
         cmake --build build
     - name: Build & Test (Windows)
       if: runner.os == 'Windows'
