@@ -7,6 +7,10 @@ build_os="$(uname)"
 if [ "${build_os}" == "Linux" ]; then
     # Instalar dependencias con yum
     yum -y install \
+        sudo \
+        eigen3 \
+        llvm-devel \
+        clang-devel \
         gcc-c++ \
         cmake \
         pkgconfig \
