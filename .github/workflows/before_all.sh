@@ -18,10 +18,7 @@ if [ "${build_os}" == "Linux" ]; then
         python3-devel \
         python3-pip \
         boost-python3-devel \
-        boost-numpy3-devel \
-        python3-numpy \
-        pypy3 \
-        castxml
+        python3-numpy
 
     # Instalar dependencias de la aplicación si se va a construir OMPL.app
     # Adaptar la condición según cómo se determine si se construye OMPL.app
