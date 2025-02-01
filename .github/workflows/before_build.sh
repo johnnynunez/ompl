@@ -41,7 +41,7 @@ install_castxml() {
 
     pushd "CastXML-${castxml_version}"
     mkdir -p build && cd build
-    cmake -DCMAKE_BUILD_TYPE=Release -DCLANG_RESOURCE_DIR="${clang_resource_dir}" ..
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ -DCLANG_RESOURCE_DIR="${clang_resource_dir}" ..
     cmake --build .
     make install
     popd
