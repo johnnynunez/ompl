@@ -40,7 +40,6 @@ elif [ "${build_os}" == "Darwin" ]; then
         wget \
         yaml-cpp \
         pypy3 \
-        castxml \
         llvm@18 \
         boost-python3 \
         freeglut \
