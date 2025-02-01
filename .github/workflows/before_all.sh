@@ -20,18 +20,6 @@ if [ "${build_os}" == "Linux" ]; then
         boost-python3-devel \
         python3-numpy
 
-    # Instalar dependencias de la aplicación si se va a construir OMPL.app
-    # Adaptar la condición según cómo se determine si se construye OMPL.app
-    if [[ "${CIBW_BUILD}" == *"cp3"* ]]; then # Ejemplo de condición
-      yum -y install \
-          freeglut-devel \
-          assimp-devel \
-          python3-PyOpenGL \
-          python3-flask \
-          python3-celery \
-          libccd-devel
-    fi
-
     # manylinux ships with a pypy installation. Make it available on the $PATH
     # so the OMPL build process picks it up and can make use of it during the
     # Python binding generation stage.
@@ -54,13 +42,4 @@ elif [ "${build_os}" == "Darwin" ]; then
         freeglut \
         assimp \
         libccd
-
-    # Instalar la versión correcta de Python
-    # Ajustar a la versión que necesites, por ejemplo, python@3.10, python@3.11, etc.
-    brew install --overwrite "python@${python_version}"
-
-    # Si construyes OMPL.app, instala PyQt5 con pip (no con brew)
-    if [[ "${CIBW_BUILD}" == *"cp3"* ]]; then # Ejemplo de condición
-      python3 -m pip install pyqt5
-    fi
 fi
