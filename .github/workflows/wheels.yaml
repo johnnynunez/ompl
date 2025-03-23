@@ -69,6 +69,9 @@ jobs:
           CIBW_SKIP: "cp*-manylinux_i686 cp*-musllinux* cp*-win32"
           CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET="15.0"
           CIBW_BEFORE_ALL_WINDOWS: ""
+          CIBW_BEFORE_BUILD_WINDOWS: >
+            powershell -NoProfile -ExecutionPolicy Bypass 
+            -File .\github\scripts\install_castxml.ps1
       - uses: actions/upload-artifact@v4
         with:
           name: wheels-${{ matrix.os }}-${{ matrix.arch }}
