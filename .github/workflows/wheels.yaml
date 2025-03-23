@@ -57,6 +57,11 @@ jobs:
             boost-test
             eigen3
             flann
+
+      - name: Setup MSBuild (Windows)
+        if: startsWith(matrix.os, 'windows')
+        uses: microsoft/setup-msbuild@v2
+
       - name: Install CastXML on Windows
         if: runner.os == 'Windows'
         shell: pwsh
