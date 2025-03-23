@@ -34,7 +34,8 @@ if (-not (Test-Path $llvm_config_file)) {
 }
 
 # Get Clang resource directory
-$clang_resource_dir = (& "C:\Program Files\LLVM\bin\clang.exe" -print-resource-dir).Trim()
+$clang_exe = "C:\Program Files\LLVM\bin\clang.exe"
+$clang_resource_dir = (& $clang_exe -print-resource-dir).Trim()
 if (-not $clang_resource_dir) {
     Write-Error "Failed to determine Clang resource directory"
     exit 1
