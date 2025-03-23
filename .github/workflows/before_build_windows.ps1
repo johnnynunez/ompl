@@ -6,22 +6,37 @@ Invoke-WebRequest -Uri "https://github.com/CastXML/CastXML/archive/refs/tags/v${
 tar -xzf "castxml.tar.gz"
 
 # Install Clang (via LLVM) since it’s not pre-installed
-choco install llvm --yes
-$env:Path += ";C:\Program Files\LLVM\bin"
-$clang_resource_dir = (& "C:\Program Files\LLVM\bin\clang" -print-resource-dir).Trim()
+choco install llvm --force --yes
+$env:Path += ";C:\Program Files\LLVM\bin"  # Ensure clang and llvm-config are in PATH
 
-# Find the directory containing LLVMConfig.cmake
-$llvm_config_path = Get-ChildItem -Path "C:\Program Files\LLVM" -Recurse -Filter "LLVMConfig.cmake" | Select-Object -First 1 | Split-Path
-if (-not $llvm_config_path) {
-    Write-Error "Could not find LLVMConfig.cmake in C:\Program Files\LLVM"
+# Get Clang resource directory
+$clang_resource_dir = (& "clang" -print-resource-dir).Trim()
+if (-not $clang_resource_dir) {
+    Write-Error "Failed to determine Clang resource directory"
     exit 1
+}
+
+# Try to get LLVM CMake directory from llvm-config
+$llvm_cmakedir = (& "llvm-config" --cmakedir).Trim()
+Write-Host "LLVM CMake directory: $llvm_cmakedir"
+if ($llvm_cmakedir -and (Test-Path "$llvm_cmakedir\LLVMConfig.cmake")) {
+    $llvm_dir = $llvm_cmakedir
+} else {
+    # Fallback: search for LLVMConfig.cmake
+    $llvm_config_file = Get-ChildItem -Path "C:\Program Files\LLVM" -Recurse -Filter "LLVMConfig.cmake" -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($llvm_config_file) {
+        $llvm_dir = $llvm_config_file.DirectoryName
+    } else {
+        Write-Error "Could not find LLVMConfig.cmake"
+        exit 1
+    }
 }
 
 # Configure, build, and install CastXML
 Set-Location -Path "CastXML-${castxml_version}"
 New-Item -ItemType Directory -Path "build" -Force
 Set-Location -Path "build"
-cmake -G "Visual Studio 17 2022" -A x64 -DCLANG_RESOURCE_DIR="$clang_resource_dir" -DLLVM_DIR="$llvm_config_path" -DCMAKE_INSTALL_PREFIX="C:\castxml" ..
+cmake -G "Visual Studio 17 2022" -A x64 -DCLANG_RESOURCE_DIR="$clang_resource_dir" -DLLVM_DIR="$llvm_dir" -DCMAKE_INSTALL_PREFIX="C:\castxml" ..
 cmake --build . --config Release --target install
 
 # Add CastXML to PATH for subsequent steps
