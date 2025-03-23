@@ -73,4 +73,33 @@ elif [ "${build_os}" == "Darwin" ]; then
     elif [ "${build_arch}" == "arm64" ]; then
         install_boost architecture=arm address-model=64 cxxflags="-arch arm64"
     fi
+elif [[ "${build_os}" =~ ^MINGW64_NT- ]]; then
+    echo "Detected Windows (Git Bash)."
+
+    # Example: Download & extract CastXML from the specified ZIP
+    echo "Downloading CastXML from GitHub..."
+    curl -L \
+      "https://github.com/CastXML/CastXMLSuperbuild/releases/download/v0.6.11.post2/castxml-windows-2025-x86_64.zip" \
+      -o castxml.zip
+
+    echo "Unzipping CastXML..."
+    unzip castxml.zip -d castxml
+
+    # The unzipped folder is typically named "castxml-windows-2025-x86_64"
+    # with a 'bin' subfolder containing castxml.exe.
+    # Add that 'bin' directory to PATH for this session:
+    export PATH="$(pwd)/castxml/castxml-windows-2025-x86_64/bin:$PATH"
+
+    echo "Verifying CastXML installation..."
+    which castxml || echo "CastXML not found on PATH!"
+    castxml --version || true
+
+    # If you need additional Windows-specific steps (e.g., installing Eigen/Boost),
+    # you could do them here, or skip them if you handle that via vcpkg, MSYS2, etc.
+    # For example:
+    #   pacman -S mingw-w64-x86_64-eigen3
+    #   pacman -S mingw-w64-x86_64-boost
+
+else
+    echo "Warning: Unrecognized platform: ${build_os}"
 fi

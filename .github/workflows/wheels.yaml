@@ -39,6 +39,25 @@ jobs:
         with:
           submodules: 'recursive'
 
+      - name: "Install Windows dependencies via vcpkg"
+        if: runner.os == 'Windows'
+        uses: lukka/run-vcpkg@v11
+        id: runvcpkg
+        with:
+          vcpkgGitCommitId: da4b78d35084ec4e9808aa02017028da03b8d2ab
+          vcpkgTriplet: 'x64-windows'
+          vcpkgArguments: >
+            boost-dynamic-bitset
+            boost-filesystem
+            boost-graph
+            boost-odeint
+            boost-program-options
+            boost-serialization
+            boost-system
+            boost-test
+            eigen3
+            flann
+
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.23.0
         with:
